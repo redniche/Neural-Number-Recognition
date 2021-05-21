@@ -1,1 +1,12 @@
-Neural Number Recognition
+## 소개
+정사각형 데이터패턴으로 이루어진 숫자를 인식하는 다층 퍼셉트론 기반 신경망입니다. 숫자가 아니어도 패턴을 유추해낼 수 있습니다.
+학습과 질의를 위해 MNIST 데이터셋을 사용하는 것을 추천합니다.
+**정식 릴리즈되지 않은 코드를 빌드, 사용시 어떠한 법적 책임도 지지 않음을 명시합니다.**
+
+
+## 개발 환경
+
+### CLIENTS
+- Framework: .Net Framework 4.7.1
+- IDE: Visual Studio 2019(back up)
+- Language: C#
