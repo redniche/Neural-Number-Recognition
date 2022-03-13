@@ -44,7 +44,7 @@ namespace 신경망프로젝트
 
             for (Int32 j = 0; j < hnode; j++)
             {
-                for (Int32 i = 0; i < hnode; i++)
+                for (Int32 i = 0; i < inode; i++)
                     wih[i, j] = rand.NextDouble() - 0.5;
             }
             for (Int32 j = 0; j < onode; j++)
