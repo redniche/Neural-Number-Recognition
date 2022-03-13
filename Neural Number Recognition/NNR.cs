@@ -10,6 +10,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace 신경망프로젝트
 {
@@ -346,14 +348,19 @@ namespace 신경망프로젝트
             foreach (Double d in answer)
                 if (d > max)
                     max = d;
-            Console.WriteLine("정답:{0} 대답:{1}", label, Array.IndexOf(answer, max));
-            if (Array.IndexOf(answer, max) == label)
+            Console.Write("정답:{0} 대답:{1}", label, Array.IndexOf(answer, max));
+            
+            if (Array.IndexOf(answer, max) == label) { 
+                Console.WriteLine();
                 return true;
+            }
+            Console.WriteLine(" 오답 발생");
             return false;
         }
         [STAThread]
         static void Main()
         {
+            Console.OutputEncoding = Encoding.UTF8;
             Int32 input_node;
             Int32 hidden_nodes;
             Int32 output_nodes;
@@ -461,7 +468,7 @@ CsvChange: 이미지 파일을 CSV파일로 저장합니다.(이미지 파일이
                             {
                                 foreach (Double[] t_data in csv_training_data)
                                     MI_Train(n, t_data);
-                                Console.Write(i + " ");
+                                Console.Write("\r진행: {0}/{1} 주기\t\t\t\t", i, num);
                             }
                             Console.WriteLine();
                         }
@@ -479,10 +486,29 @@ CsvChange: 이미지 파일을 CSV파일로 저장합니다.(이미지 파일이
                         if ((csv_query_path = FileIO.CSV_Open()) != null)
                         {
                             Int32 score = 0;
+                            Int32 error = 0;
                             Double[][] csv_query_data = FileIO.CSV_Read(csv_query_path);
-                            foreach (Double[] q_data in csv_query_data)
+                            
+                            String fileName = DateTime.Now.ToString("yyyy-MM-dd HH시mm분ss초") + " 신경망log.txt";
+                            Console.WriteLine(fileName);
+                            FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
+                            StreamWriter sw = new StreamWriter(fs);
+                            
+                            Int32 data_length = csv_query_data.Length;
+                            StreamWriter standardOutput = new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8);
+                            standardOutput.AutoFlush = true;
+
+                            foreach (Double[] q_data in csv_query_data) { 
+                                Console.SetOut(sw);
                                 if (MI_Query(n, q_data)) score++;
-                            Console.WriteLine("점수: " + score + "/" + csv_query_data.Length);
+                                else error++;
+                                Console.SetOut(standardOutput);
+                                Console.Write("\r점수(정답수|오답수|총개수): {0}|{1}|{2}\t\t\t\t", score, error, data_length);
+                            }
+                            sw.Close();
+                            fs.Close();
+                            Double score_rate = ((Single)score / (Single)data_length) * 100f;
+                            Console.WriteLine("\n정확도: {0:F}%", score_rate);
                         }
                     }
                     catch (Exception ex)
@@ -499,14 +525,14 @@ CsvChange: 이미지 파일을 CSV파일로 저장합니다.(이미지 파일이
                         String[] image_training_list;
                         if ((image_training_list = FileIO.Image_Open()) != null)
                         {
-                            for (Int32 i = 0; i < num; i++)
+                            for (Int32 i = 1; i <= num; i++)
                             {
                                 foreach (String record in image_training_list)
                                 {
                                     Double[] image_training_data = FileIO.Image_Read(record);
                                     MI_Train(n, image_training_data);
                                 }
-                                Console.Write(i + " ");
+                                Console.Write("\r진행: {0}/{1} 주기\t\t\t\t", i, num);
                             }
                             Console.WriteLine();
                         }
