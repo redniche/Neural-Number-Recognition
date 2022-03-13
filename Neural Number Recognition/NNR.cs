@@ -464,7 +464,8 @@ CsvChange: 이미지 파일을 CSV파일로 저장합니다.(이미지 파일이
                         if ((csv_training_path = FileIO.CSV_Open()) != null)
                         {
                             Double[][] csv_training_data = FileIO.CSV_Read(csv_training_path);
-                            for (Int32 i = 0; i < num; i++)
+                            Console.Write("\r진행: {0}/{1} 주기\t\t\t\t", 0, num);
+                            for (Int32 i = 1; i <= num; i++)
                             {
                                 foreach (Double[] t_data in csv_training_data)
                                     MI_Train(n, t_data);
@@ -525,6 +526,7 @@ CsvChange: 이미지 파일을 CSV파일로 저장합니다.(이미지 파일이
                         String[] image_training_list;
                         if ((image_training_list = FileIO.Image_Open()) != null)
                         {
+                            Console.Write("\r진행: {0}/{1} 주기\t\t\t\t", 0, num);
                             for (Int32 i = 1; i <= num; i++)
                             {
                                 foreach (String record in image_training_list)
